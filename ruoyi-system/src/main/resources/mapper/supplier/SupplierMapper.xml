@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.supplier.mapper.SupplierMapper">
+    
+    <resultMap type="Supplier" id="SupplierResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="address"    column="address"    />
+        <result property="contactPersonName"    column="contact_person_name"    />
+        <result property="telephone"    column="telephone"    />
+        <result property="mobilePhone"    column="mobile_phone"    />
+        <result property="bankCardNumber"    column="bank_card_number"    />
+    </resultMap>
+
+    <sql id="selectSupplierVo">
+        select id, name, address, contact_person_name, telephone, mobile_phone, bank_card_number from supplier
+    </sql>
+
+    <select id="selectSupplierList" parameterType="Supplier" resultMap="SupplierResult">
+        <include refid="selectSupplierVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="contactPersonName != null  and contactPersonName != ''"> and contact_person_name like concat('%', #{contactPersonName}, '%')</if>
+            <if test="telephone != null  and telephone != ''"> and telephone = #{telephone}</if>
+            <if test="mobilePhone != null  and mobilePhone != ''"> and mobile_phone = #{mobilePhone}</if>
+            <if test="bankCardNumber != null  and bankCardNumber != ''"> and bank_card_number = #{bankCardNumber}</if>
+        </where>
+    </select>
+    
+    <select id="selectSupplierById" parameterType="Long" resultMap="SupplierResult">
+        <include refid="selectSupplierVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSupplier" parameterType="Supplier" useGeneratedKeys="true" keyProperty="id">
+        insert into supplier
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="address != null">address,</if>
+            <if test="contactPersonName != null">contact_person_name,</if>
+            <if test="telephone != null">telephone,</if>
+            <if test="mobilePhone != null">mobile_phone,</if>
+            <if test="bankCardNumber != null">bank_card_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="address != null">#{address},</if>
+            <if test="contactPersonName != null">#{contactPersonName},</if>
+            <if test="telephone != null">#{telephone},</if>
+            <if test="mobilePhone != null">#{mobilePhone},</if>
+            <if test="bankCardNumber != null">#{bankCardNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSupplier" parameterType="Supplier">
+        update supplier
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="contactPersonName != null">contact_person_name = #{contactPersonName},</if>
+            <if test="telephone != null">telephone = #{telephone},</if>
+            <if test="mobilePhone != null">mobile_phone = #{mobilePhone},</if>
+            <if test="bankCardNumber != null">bank_card_number = #{bankCardNumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSupplierById" parameterType="Long">
+        delete from supplier where id = #{id}
+    </delete>
+
+    <delete id="deleteSupplierByIds" parameterType="String">
+        delete from supplier where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

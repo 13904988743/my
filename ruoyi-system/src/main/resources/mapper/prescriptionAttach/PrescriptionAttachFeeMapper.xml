@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.prescriptionAttach.mapper.PrescriptionAttachFeeMapper">
+    
+    <resultMap type="PrescriptionAttachFee" id="PrescriptionAttachFeeResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="fee"    column="fee"    />
+        <result property="prescriptionType"    column="prescription_type"    />
+    </resultMap>
+
+    <sql id="selectPrescriptionAttachFeeVo">
+        select id, name, fee, prescription_type from prescription_attach_fee
+    </sql>
+
+    <select id="selectPrescriptionAttachFeeList" parameterType="PrescriptionAttachFee" resultMap="PrescriptionAttachFeeResult">
+        <include refid="selectPrescriptionAttachFeeVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="fee != null "> and fee = #{fee}</if>
+            <if test="prescriptionType != null  and prescriptionType != ''"> and prescription_type = #{prescriptionType}</if>
+        </where>
+    </select>
+    
+    <select id="selectPrescriptionAttachFeeById" parameterType="Long" resultMap="PrescriptionAttachFeeResult">
+        <include refid="selectPrescriptionAttachFeeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPrescriptionAttachFee" parameterType="PrescriptionAttachFee" useGeneratedKeys="true" keyProperty="id">
+        insert into prescription_attach_fee
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="fee != null">fee,</if>
+            <if test="prescriptionType != null">prescription_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="fee != null">#{fee},</if>
+            <if test="prescriptionType != null">#{prescriptionType},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePrescriptionAttachFee" parameterType="PrescriptionAttachFee">
+        update prescription_attach_fee
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="fee != null">fee = #{fee},</if>
+            <if test="prescriptionType != null">prescription_type = #{prescriptionType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePrescriptionAttachFeeById" parameterType="Long">
+        delete from prescription_attach_fee where id = #{id}
+    </delete>
+
+    <delete id="deletePrescriptionAttachFeeByIds" parameterType="String">
+        delete from prescription_attach_fee where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

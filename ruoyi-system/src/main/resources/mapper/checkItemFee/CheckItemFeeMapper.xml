@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.checkItemFee.mapper.CheckItemFeeMapper">
+    
+    <resultMap type="CheckItemFee" id="CheckItemFeeResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="itemFee"    column="item_fee"    />
+        <result property="itemCost"    column="item_cost"    />
+        <result property="checkItemUnit"    column="check_item_unit"    />
+        <result property="checkItemType"    column="check_item_type"    />
+    </resultMap>
+
+    <sql id="selectCheckItemFeeVo">
+        select id, name, item_fee, item_cost, check_item_unit, check_item_type from check_item_fee
+    </sql>
+
+    <select id="selectCheckItemFeeList" parameterType="CheckItemFee" resultMap="CheckItemFeeResult">
+        <include refid="selectCheckItemFeeVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="itemFee != null "> and item_fee = #{itemFee}</if>
+            <if test="itemCost != null "> and item_cost = #{itemCost}</if>
+            <if test="checkItemUnit != null  and checkItemUnit != ''"> and check_item_unit = #{checkItemUnit}</if>
+            <if test="checkItemType != null  and checkItemType != ''"> and check_item_type = #{checkItemType}</if>
+        </where>
+    </select>
+    
+    <select id="selectCheckItemFeeById" parameterType="Long" resultMap="CheckItemFeeResult">
+        <include refid="selectCheckItemFeeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCheckItemFee" parameterType="CheckItemFee" useGeneratedKeys="true" keyProperty="id">
+        insert into check_item_fee
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="itemFee != null">item_fee,</if>
+            <if test="itemCost != null">item_cost,</if>
+            <if test="checkItemUnit != null">check_item_unit,</if>
+            <if test="checkItemType != null">check_item_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="itemFee != null">#{itemFee},</if>
+            <if test="itemCost != null">#{itemCost},</if>
+            <if test="checkItemUnit != null">#{checkItemUnit},</if>
+            <if test="checkItemType != null">#{checkItemType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCheckItemFee" parameterType="CheckItemFee">
+        update check_item_fee
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="itemFee != null">item_fee = #{itemFee},</if>
+            <if test="itemCost != null">item_cost = #{itemCost},</if>
+            <if test="checkItemUnit != null">check_item_unit = #{checkItemUnit},</if>
+            <if test="checkItemType != null">check_item_type = #{checkItemType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCheckItemFeeById" parameterType="Long">
+        delete from check_item_fee where id = #{id}
+    </delete>
+
+    <delete id="deleteCheckItemFeeByIds" parameterType="String">
+        delete from check_item_fee where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
